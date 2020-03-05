@@ -18,25 +18,47 @@ namespace DoubleBrowser
 
         public TreeNodeCollection nodeCollection;
 
-        public void treeViewDrives(TreeView mytreeview)
+        public void treeViewDrives(TreeView mytreeview , TreeNode nodeToAddTo)
         {
+            string[] drives = Environment.GetLogicalDrives();
             DriveInfo[] allDrives = DriveInfo.GetDrives();
             mytreeview.PathSeparator = @"\";
-            foreach (DriveInfo drive in allDrives)
+            foreach (string drive in drives)
             {
-                switch (drive.DriveType.ToString())
+                DriveInfo di = new DriveInfo(drive);
+                int driveImage;
+                switch (di.DriveType)
                 {
 
-                    case "CDROM":
+                    case DriveType.CDRom:
+                        driveImage = 3;
 
-
+                        break;
+                    case DriveType.Network:
+                        driveImage = 6;
+                        break;
+                    case DriveType.NoRootDirectory:
+                        driveImage = 8;
+                        break;
+                    case DriveType.Unknown:
+                        driveImage = 8;
+                        break;
+                    default:
+                        driveImage = 2;
                         break;
 
 
 
 
-
                 }
+
+                TreeNode node = new TreeNode(drive.Substring(0, 1), driveImage, driveImage);
+                node.Tag = drive;
+
+                if (di.IsReady == true)
+                    node.Nodes.Add("...");
+
+                nodeToAddTo.Nodes.Add(node);
             }
 
         }
