@@ -5,6 +5,9 @@ using System.Text;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Management;
+using System.Collections;
+
 
 namespace DoubleBrowser
 {
@@ -17,55 +20,168 @@ namespace DoubleBrowser
         const string USBDrive = "usb";
 
         public TreeNodeCollection nodeCollection;
-
-        public void treeViewDrives(TreeView mytreeview , TreeNode nodeToAddTo)
+        //TODO:  Create new drive methiod based upon below 2/21/21
+        public void PopulateTreeView(string Epath, string INodeImage, TreeView mytreeview)
         {
-            string[] drives = Environment.GetLogicalDrives();
-            DriveInfo[] allDrives = DriveInfo.GetDrives();
-            mytreeview.PathSeparator = @"\";
-            foreach (string drive in drives)
+            try
             {
-                DriveInfo di = new DriveInfo(drive);
-                int driveImage;
-                switch (di.DriveType)
+                TreeNode rootNode;
+
+                //DirectoryInfo info = new DirectoryInfo(@"../..");
+
+                // Console.WriteLine("GetFolderPath: {5}", Environment.GetFolderPath(Environment.SpecialFolder.System));
+                DirectoryInfo info = new DirectoryInfo(@Epath);
+                if (info.Exists)
                 {
 
-                    case DriveType.CDRom:
-                        driveImage = 3;
-
-                        break;
-                    case DriveType.Network:
-                        driveImage = 6;
-                        break;
-                    case DriveType.NoRootDirectory:
-                        driveImage = 8;
-                        break;
-                    case DriveType.Unknown:
-                        driveImage = 8;
-                        break;
-                    default:
-                        driveImage = 2;
-                        break;
-
-
-
-
+                    rootNode = new TreeNode(info.Name, 1, 1)
+                    {
+                        Tag = info,
+                        ImageKey = INodeImage
+                    };
+                    GetSubDirectories(info.GetDirectories(), rootNode);
+                    mytreeview.Nodes.Add(rootNode);
                 }
-
-                TreeNode node = new TreeNode(drive.Substring(0, 1), driveImage, driveImage);
-                node.Tag = drive;
-
-                if (di.IsReady == true)
-                    node.Nodes.Add("...");
-
-                nodeToAddTo.Nodes.Add(node);
             }
 
+            catch (IOException e) { MessageBox.Show(e.Message, "IO Exception" + e.Source.ToString(), MessageBoxButtons.OK); }
+
+            catch (UnauthorizedAccessException e) { //MessageBox.Show(e.Message, "UA Exception" + e.Source.ToString(), MessageBoxButtons.OK); 
+                return;
+            }
+
+            catch (Exception e) { MessageBox.Show(e.Message.ToString(), e.Source.ToString(), MessageBoxButtons.OK); }
+
+        } //end Populatetreeviw
+
+        private void GetSubDirectories(DirectoryInfo[] subDirs, TreeNode nodeToAddTo)
+        {
+            string tPath = "";
+            TreeNode aNode;
+            DirectoryInfo[] subSubDirs;
+            foreach (DirectoryInfo subDir in subDirs)
+            {
+                tPath = subDir.Name.ToString().Replace(@"\\", @"\");
+
+                aNode = new TreeNode(tPath, 0, 0)
+                {
+                    Tag = subDir,
+                    ImageKey = "folder"
+                };
+                subSubDirs = subDir.GetDirectories();
+                if (subSubDirs.Length != 0)
+                {
+                    GetSubDirectories(subSubDirs, aNode);
+                }
+                nodeToAddTo.Nodes.Add(aNode);
+            }
         }
-     
+
+
+        public void TreeViewDrives(TreeView mytreeview)
+        {
+            try
+            {
+                //string[] drives = Environment.GetLogicalDrives();
+                DriveInfo[] allDrives = DriveInfo.GetDrives();
+                mytreeview.PathSeparator = @"\";
+                foreach (DriveInfo drive in allDrives)
+                {
+                    // DriveInfo di = new DriveInfo(drive);
+                    int driveImage;
+                    string mtimage = "Folder";
+                    switch (drive.DriveType)
+                    {
+
+                        case DriveType.CDRom:
+                            driveImage = 3;
+                            mtimage = CD;
+
+                            break;
+                        case DriveType.Network:
+                            driveImage = 6;
+                            mtimage = LocalDrive;
+                            break;
+                        case DriveType.Removable:
+                            driveImage = 8;
+                            mtimage = USBDrive;
+                            break;
+                        case DriveType.NoRootDirectory:
+                            driveImage = 8;
+                            break;
+                        case DriveType.Fixed:
+                            driveImage = 8;
+                            mtimage = LocalDrive;
+                            break;
+                        default:
+                            driveImage = 2;
+                            break;
 
 
 
-        } //end class
-    } //end namespace
+
+                    }
+                    // TreeNode snode = new TreeNode(drive.VolumeLabel);
+                    string dLabel = drive.RootDirectory.Name +" "+ drive.VolumeLabel;
+                    if (dLabel == "" || dLabel == null) { dLabel = drive.RootDirectory.Name.ToString(); }
+                    TreeNode node = new TreeNode(dLabel, driveImage, driveImage);
+                    node.Tag = "";
+                    node.Tag = drive.VolumeLabel;
+                    node.ImageKey = mtimage;
+
+                    //    if (drive.IsReady == true)
+                    //    {
+                    //        TreeNode bNode;
+                    //        DirectoryInfo[] subs = drive.RootDirectory.GetDirectories();
+
+                    //        node.Nodes.Add(drive.RootDirectory.FullName);
+                    //        if (subs != null)
+                    //        {
+                    //            foreach (DirectoryInfo subDir in subs)
+                    //            {
+                    //                string tPath = subDir.Name.ToString().Replace(@"\\", @"\");
+
+                    //                bNode = new TreeNode(tPath, 0, 0);
+                    //                bNode.Tag = subDir;
+                    //                bNode.ImageKey = mtimage;
+                    //                subs = subDir.GetDirectories();
+                    //                if (subs.Length != 0)
+                    //                {
+                    //                    GetSubDirectories(subs, bNode);
+                    //                }
+                    //                mytreeview.Nodes.Add(bNode);
+                    //            }
+                    //        }
+
+                    //    }
+                    //    else
+                    //    {
+                    //        node.Nodes.Add("...");
+                    //    }
+
+                        mytreeview.Nodes.Add(node);
+                    }
+                
+            }
+            catch (System.NullReferenceException ex) { return; }
+            catch (IOException ex) { return; }
+        }//end of treeDriveView
+
+
+
+        //public void ListViewFill(ListView SelectedListView , TreeView myTreeView)
+        //{
+        //    SelectedListView.Clear();
+
+
+
+        //}
+
+
+
+
+
+    } //end class
+    
+}//end namespace
 
