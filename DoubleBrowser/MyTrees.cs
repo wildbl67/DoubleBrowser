@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Management;
 using System.Collections;
+using System.
 
 
 namespace DoubleBrowser
@@ -111,6 +112,7 @@ namespace DoubleBrowser
                             break;
                         case DriveType.Fixed:
                             driveImage = 8;
+                            sHFILEINFO
                             mtimage = LocalDrive;
                             break;
                         default:
@@ -121,13 +123,24 @@ namespace DoubleBrowser
 
 
                     }
+                    TreeNode node = new TreeNode();
+                    if(drive.IsReady){
                     // TreeNode snode = new TreeNode(drive.VolumeLabel);
                     string dLabel = drive.RootDirectory.Name +" "+ drive.VolumeLabel;
                     if (dLabel == "" || dLabel == null) { dLabel = drive.RootDirectory.Name.ToString(); }
-                    TreeNode node = new TreeNode(dLabel, driveImage, driveImage);
-                    node.Tag = "";
-                    node.Tag = drive.VolumeLabel;
+                    //TreeNode node = new TreeNode(dLabel, driveImage, driveImage);
+                   
+                    node.Tag=drive.RootDirectory.Name.ToString();
+                    node.Text = dLabel;
                     node.ImageKey = mtimage;
+                       
+                        }else{
+                        node.Tag=drive.RootDirectory.Name.ToString();
+                        node.Text = drive.RootDirectory.Name.ToString();
+                        node.ImageKey = mtimage;
+                        node.ImageKey = drive.Equals.;
+                        
+                    }
 
                     //    if (drive.IsReady == true)
                     //    {

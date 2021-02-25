@@ -75,7 +75,7 @@ namespace DoubleBrowser
 
                treeClass.TreeViewDrives(treeViewLeft);
 
-                //treeClass.TreeViewDrives(treeViewRight);
+                treeClass.TreeViewDrives(treeViewRight);
             }
            
             catch(System.NullReferenceException ex) { return; }
