@@ -7,7 +7,11 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Management;
 using System.Collections;
+<<<<<<< HEAD
 
+=======
+using System.
+>>>>>>> f018f1c6836c6aeb94fa697ea71e72a8428c42f8
 
 
 namespace DoubleBrowser
@@ -44,6 +48,7 @@ namespace DoubleBrowser
                     mytreeview.Nodes.Add(rootNode);
                 }
             }
+<<<<<<< HEAD
 
             catch (IOException e) { MessageBox.Show(e.Message, "IO Exception" + e.Source.ToString(), MessageBoxButtons.OK); }
 
@@ -78,6 +83,42 @@ namespace DoubleBrowser
             }
         }
 
+=======
+
+            catch (IOException e) { MessageBox.Show(e.Message, "IO Exception" + e.Source.ToString(), MessageBoxButtons.OK); }
+
+            catch (UnauthorizedAccessException e) { //MessageBox.Show(e.Message, "UA Exception" + e.Source.ToString(), MessageBoxButtons.OK); 
+                return;
+            }
+
+            catch (Exception e) { MessageBox.Show(e.Message.ToString(), e.Source.ToString(), MessageBoxButtons.OK); }
+
+        } //end Populatetreeviw
+
+        private void GetSubDirectories(DirectoryInfo[] subDirs, TreeNode nodeToAddTo)
+        {
+            string tPath = "";
+            TreeNode aNode;
+            DirectoryInfo[] subSubDirs;
+            foreach (DirectoryInfo subDir in subDirs)
+            {
+                tPath = subDir.Name.ToString().Replace(@"\\", @"\");
+
+                aNode = new TreeNode(tPath, 0, 0)
+                {
+                    Tag = subDir,
+                    ImageKey = "folder"
+                };
+                subSubDirs = subDir.GetDirectories();
+                if (subSubDirs.Length != 0)
+                {
+                    GetSubDirectories(subSubDirs, aNode);
+                }
+                nodeToAddTo.Nodes.Add(aNode);
+            }
+        }
+
+>>>>>>> f018f1c6836c6aeb94fa697ea71e72a8428c42f8
 
         public void TreeViewDrives(TreeView mytreeview)
         {
@@ -86,27 +127,46 @@ namespace DoubleBrowser
                 //string[] drives = Environment.GetLogicalDrives();
                 DriveInfo[] allDrives = DriveInfo.GetDrives();
                 mytreeview.PathSeparator = @"\";
+<<<<<<< HEAD
                 string mtimage = "Folder";
+=======
+>>>>>>> f018f1c6836c6aeb94fa697ea71e72a8428c42f8
                 foreach (DriveInfo drive in allDrives)
                 {
                     // DriveInfo di = new DriveInfo(drive);
                     int driveImage;
+<<<<<<< HEAD
                     
+=======
+                    string mtimage = "Folder";
+>>>>>>> f018f1c6836c6aeb94fa697ea71e72a8428c42f8
                     switch (drive.DriveType)
                     {
 
                         case DriveType.CDRom:
                             driveImage = 3;
+<<<<<<< HEAD
                             mtimage = "CD";
+=======
+                            mtimage = CD;
+>>>>>>> f018f1c6836c6aeb94fa697ea71e72a8428c42f8
 
                             break;
                         case DriveType.Network:
                             driveImage = 6;
+<<<<<<< HEAD
                             mtimage = "LocalDrive";
                             break;
                         case DriveType.Removable:
                             driveImage = 8;
                             mtimage = "USBDrive";
+=======
+                            mtimage = LocalDrive;
+                            break;
+                        case DriveType.Removable:
+                            driveImage = 8;
+                            mtimage = USBDrive;
+>>>>>>> f018f1c6836c6aeb94fa697ea71e72a8428c42f8
                             break;
                         case DriveType.NoRootDirectory:
                             driveImage = 8;
@@ -114,7 +174,11 @@ namespace DoubleBrowser
                         case DriveType.Fixed:
                             driveImage = 8;
                             sHFILEINFO
+<<<<<<< HEAD
                             mtimage = "LocalDrive";
+=======
+                            mtimage = LocalDrive;
+>>>>>>> f018f1c6836c6aeb94fa697ea71e72a8428c42f8
                             break;
                         default:
                             driveImage = 2;
@@ -139,7 +203,11 @@ namespace DoubleBrowser
                         node.Tag=drive.RootDirectory.Name.ToString();
                         node.Text = drive.RootDirectory.Name.ToString();
                         node.ImageKey = mtimage;
+<<<<<<< HEAD
                         //node.ImageKey = drive.Equals.;
+=======
+                        node.ImageKey = drive.Equals.;
+>>>>>>> f018f1c6836c6aeb94fa697ea71e72a8428c42f8
                         
                     }
 
