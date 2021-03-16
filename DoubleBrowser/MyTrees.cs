@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Management;
 using System.Collections;
-using System.
+
 
 
 namespace DoubleBrowser
@@ -86,26 +86,27 @@ namespace DoubleBrowser
                 //string[] drives = Environment.GetLogicalDrives();
                 DriveInfo[] allDrives = DriveInfo.GetDrives();
                 mytreeview.PathSeparator = @"\";
+                string mtimage = "Folder";
                 foreach (DriveInfo drive in allDrives)
                 {
                     // DriveInfo di = new DriveInfo(drive);
                     int driveImage;
-                    string mtimage = "Folder";
+                    
                     switch (drive.DriveType)
                     {
 
                         case DriveType.CDRom:
                             driveImage = 3;
-                            mtimage = CD;
+                            mtimage = "CD";
 
                             break;
                         case DriveType.Network:
                             driveImage = 6;
-                            mtimage = LocalDrive;
+                            mtimage = "LocalDrive";
                             break;
                         case DriveType.Removable:
                             driveImage = 8;
-                            mtimage = USBDrive;
+                            mtimage = "USBDrive";
                             break;
                         case DriveType.NoRootDirectory:
                             driveImage = 8;
@@ -113,7 +114,7 @@ namespace DoubleBrowser
                         case DriveType.Fixed:
                             driveImage = 8;
                             sHFILEINFO
-                            mtimage = LocalDrive;
+                            mtimage = "LocalDrive";
                             break;
                         default:
                             driveImage = 2;
@@ -138,7 +139,7 @@ namespace DoubleBrowser
                         node.Tag=drive.RootDirectory.Name.ToString();
                         node.Text = drive.RootDirectory.Name.ToString();
                         node.ImageKey = mtimage;
-                        node.ImageKey = drive.Equals.;
+                        //node.ImageKey = drive.Equals.;
                         
                     }
 
